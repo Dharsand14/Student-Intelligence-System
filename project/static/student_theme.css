@@ -1,0 +1,48 @@
+/* 🌊 Student-Specific Unique Theme */
+/* Overrides styles.css globally when role == 'student' */
+
+/* 1. Dynamic Ocean Background */
+[data-testid="stAppViewContainer"] {
+    background: linear-gradient(135deg, #020617, #082f49, #0f172a) !important;
+}
+
+/* 2. Vibrant Progress / Growth Buttons (Cyan -> Emerald) */
+.stButton > button {
+    background: linear-gradient(135deg, #0ea5e9, #10b981) !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, #0284c7, #059669) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5) !important;
+    transform: translateY(-2px);
+}
+
+/* 3. Card Hover Effects (Glowing Green/Teal) */
+.card:hover {
+    border-color: rgba(16, 185, 129, 0.5) !important;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 4. Active Inputs Highlight */
+.stTextInput > div > div > input:focus,
+.stNumberInput > div > div > input:focus,
+.stSelectbox > div > div > div:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* 5. Metrics (Cyan to Green Gradient for Growth) */
+[data-testid="stMetricValue"] {
+    background: -webkit-linear-gradient(45deg, #38bdf8, #34d399) !important;
+    background: linear-gradient(45deg, #38bdf8, #34d399) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* 6. Sidebar Accent to match background */
+[data-testid="stSidebar"] {
+    background: rgba(8, 47, 73, 0.8) !important; /* Deep ocean blue glass */
+    border-right: 1px solid rgba(16, 185, 129, 0.15) !important;
+}
