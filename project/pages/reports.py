@@ -42,20 +42,27 @@ def reports_page():
         mime="text/csv"
     )
 
-    # ✅ Generate advanced report (PDF/CSV from service)
+    # ✅ Generate advanced report
     st.subheader("📑 Generate Full Report")
 
-    if st.button("Generate Report"):
+    if st.button("Generate Summary Text Report"):
         try:
-            file = generate_report()
+            # ✅ PASS DATA TO FUNCTION
+            df_report, summary = generate_report(data)
+            
+            # Format report as text
+            report_text = "📊 FULL STUDENT SUMMARY REPORT 📊\n"
+            report_text += "=" * 35 + "\n\n"
+            for k, v in summary.items():
+                report_text += f"✔️ {k}: {v}\n"
 
             st.success("Report generated successfully!")
 
             st.download_button(
-                label="Download Full Report",
-                data=file,
-                file_name="full_report.pdf",
-                mime="application/pdf"
+                label="Download Summary Report",
+                data=report_text.encode("utf-8"),
+                file_name="summary_report.txt",
+                mime="text/plain"
             )
 
         except Exception as e:

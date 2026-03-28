@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from database.predictions_db import get_all
+from services.insight import generate_class_insights
 
 def analytics_page():
     st.markdown("<h1 style='text-align: center;'>📈 Advanced Analytics</h1>", unsafe_allow_html=True)
@@ -12,11 +13,21 @@ def analytics_page():
         st.warning("No data available")
         return
 
-    # Modern Custom Dataframe
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("📋 Dataset Overview")
-    st.dataframe(df, use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+    # Group custom cards
+    c1, c2 = st.columns(2)
+    with c1:
+        # Modern Custom Dataframe
+        st.markdown("<div class='card'>", unsafe_allow_html=True)
+        st.subheader("📋 Dataset Overview")
+        st.dataframe(df, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+    with c2:
+        st.markdown("<div class='card'>", unsafe_allow_html=True)
+        st.subheader("🤖 AI Insights")
+        insights = generate_class_insights(df)
+        for insight in insights:
+            st.info(insight)
+        st.markdown("</div>", unsafe_allow_html=True)
 
     # Charts
     # Set dark theme template for all Plotly charts

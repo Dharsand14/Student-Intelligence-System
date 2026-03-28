@@ -1,107 +1,185 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
 
-/* 🌑 Global Typography & Background */
+/* 🌑 Global Typography & Animated Background */
 html, body, [class*="css"]  {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* 🔥 Mesmerizing Animated Gradient Background */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #0f172a, #1e293b, #111827);
+    background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #0f172a);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
     color: #f8fafc;
 }
 
-/* 🧊 Glassmorphism Cards */
+/* ✨ Slide Up Animation for ALL Elements */
+@keyframes slideUpFade {
+    0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+[data-testid="stVerticalBlock"] > div {
+    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+[data-testid="stVerticalBlock"] > div:nth-child(odd) { animation-delay: 0.1s; }
+[data-testid="stVerticalBlock"] > div:nth-child(even) { animation-delay: 0.2s; }
+
+/* 🧊 Ultimate Glassmorphism Cards */
 .card {
-    background: rgba(30, 41, 59, 0.7);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 16px;
-    padding: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    /* Classic light/dark frosted glass specular gradient */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03)) !important;
+    backdrop-filter: blur(25px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
+    border-radius: 20px !important;
+    padding: 28px !important;
+    /* Precise white rim lighting for 'cut glass' look */
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-right-color: rgba(255, 255, 255, 0.1) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3) !important;
     margin-bottom: 24px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
-    border-color: rgba(99, 102, 241, 0.4);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    border-color: rgba(139, 92, 246, 0.6) !important;
+    background: rgba(30, 41, 59, 0.6) !important;
 }
 
-/* 🔘 Modern Gradient Buttons */
+/* 🔘 Dynamic Glowing Buttons */
 .stButton > button {
     width: 100% !important;
-    border-radius: 12px !important;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    border-radius: 14px !important;
+    background: linear-gradient(135deg, #6366f1, #d946ef) !important;
     color: white !important;
-    font-weight: 600;
-    font-size: 16px;
-    padding: 12px;
-    border: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    font-size: 16px !important;
+    padding: 14px !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 6px 20px rgba(217, 70, 239, 0.4) !important;
+    position: relative;
+    overflow: hidden;
 }
 
-/* 🔥 Button Hover */
+/* Button Shimmer Effect */
+.stButton > button::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: all 0.5s ease;
+}
+
+.stButton > button:hover::after {
+    left: 100%;
+    transition: all 0.5s ease;
+}
+
 .stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6);
-    background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(217, 70, 239, 0.7) !important;
+    filter: brightness(1.1);
 }
 
 .stButton > button:active {
-    transform: translateY(1px);
+    transform: translateY(1px) scale(0.98);
 }
 
-/* ✏️ Premium Inputs */
+/* ✏️ Premium Interactive Inputs */
 .stTextInput > div > div > input,
 .stNumberInput > div > div > input,
-.stSelectbox > div > div > div {
-    background: rgba(15, 23, 42, 0.6) !important;
-    border-radius: 10px !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
-    padding: 10px 14px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+.stSelectbox > div > div > div,
+.stSlider > div > div > div {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: #e2e8f0 !important;
+    padding: 12px 18px !important;
+    transition: all 0.3s ease !important;
 }
 
 .stTextInput > div > div > input:focus,
 .stNumberInput > div > div > input:focus,
 .stSelectbox > div > div > div:focus {
-    border-color: #6366f1 !important;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3) !important;
+    border-color: #d946ef !important;
+    box-shadow: 0 0 15px rgba(217, 70, 239, 0.4) !important;
+    background: rgba(15, 23, 42, 0.8) !important;
 }
 
-/* 📊 Metrics Styling (st.metric) */
+/* 📊 Pulsing Neon Metrics */
+@keyframes pulseMetric {
+    0% { filter: drop-shadow(0 0 8px rgba(217, 70, 239, 0.3)); }
+    50% { filter: drop-shadow(0 0 18px rgba(217, 70, 239, 0.8)); }
+    100% { filter: drop-shadow(0 0 8px rgba(217, 70, 239, 0.3)); }
+}
+
 [data-testid="stMetricValue"] {
-    font-size: 32px !important;
-    font-weight: 700 !important;
-    background: -webkit-linear-gradient(45deg, #a78bfa, #818cf8);
-    background: linear-gradient(45deg, #a78bfa, #818cf8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-[data-testid="stMetricLabel"] {
-    font-size: 16px !important;
-    color: #94a3b8 !important;
-    font-weight: 500 !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 38px !important;
+    font-weight: 800 !important;
+    background: linear-gradient(to right, #a855f7, #ec4899) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: pulseMetric 3s infinite alternate;
 }
 
-/* 📑 Sidebar Customization */
-[data-testid="stSidebarNav"] {
-    display: none !important; /* Hides the default Streamlit pages list */
+[data-testid="stMetricLabel"] {
+    font-size: 14px !important;
+    color: #cbd5e1 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
+
+/* 📑 Sexy Sidebar Setup */
+[data-testid="stSidebarNav"] { display: none !important; }
 
 [data-testid="stSidebar"] {
-    background: rgba(15, 23, 42, 0.9) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2)) !important;
+    backdrop-filter: blur(30px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
-/* Dataframe & Tables styling */
+/* Dataframe glass effect */
 [data-testid="stDataFrame"] {
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px !important;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Tabs glassmorphism styling */
+[data-testid="stTabs"] button[role="tab"] {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.0)) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px 8px 0 0 !important;
+    padding: 10px 20px !important;
+    color: #cbd5e1 !important;
+    margin-right: 4px;
+}
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
 }

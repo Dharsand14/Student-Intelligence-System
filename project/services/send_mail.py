@@ -7,12 +7,12 @@ from email.mime.application import MIMEApplication
 
 def send_email(data, prediction, file_path=None):
     try:
-        # 🔐 Use environment variables (IMPORTANT)
-        sender_email = os.getenv("studentperformanceprediction1@gmail.com")
-        app_password = os.getenv("cngufosjfqhyitbv")
+        # 🔐 Use environment variables or fallback to hardcoded auth
+        sender_email = os.getenv("EMAIL_SENDER", "studentperformanceprediction1@gmail.com")
+        app_password = os.getenv("EMAIL_PASSWORD", "cngufosjfqhyitbv")
 
         # 📩 Send to logged-in user (better)
-        receiver_email = data.get("studentperformanceprediction1@gmail.com")
+        receiver_email = data.get("email", data.get("student_id"))
 
         if not receiver_email:
             print("⚠️ No email provided")
@@ -70,3 +70,26 @@ Student Performance Prediction Details
 
     except Exception as e:
         print(f"❌ Email error: {e}")
+
+def send_reset_password_email(receiver_email, reset_link="https://student-performance.example.com/reset"):
+    try:
+        sender_email = os.getenv("EMAIL_SENDER", "studentperformanceprediction1@gmail.com")
+        app_password = os.getenv("EMAIL_PASSWORD", "cngufosjfqhyitbv")
+        
+        subject = "🔐 Password Reset Request"
+        body = f"Hello,\n\nYou requested a password reset for your account.\nClick the link below to reset your password:\n\n{reset_link}\n\nIf you did not request this, please ignore this email."
+        
+        msg = MIMEMultipart()
+        msg["Subject"] = subject
+        msg["From"] = sender_email
+        msg["To"] = receiver_email
+        msg.attach(MIMEText(body, "plain"))
+        
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(sender_email, app_password)
+        server.send_message(msg)
+        server.quit()
+        return True, "Email sent successfully"
+    except Exception as e:
+        return False, str(e)

@@ -23,9 +23,49 @@ def add_user(username, password, role):
             "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
             (username, hashed_password, role)
         )
-
         conn.commit()
+    finally:
+        conn.close()
 
+
+# -------------------------------
+# 🎓 ADD STUDENT
+# -------------------------------
+def add_student(student_id, name, email):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "INSERT INTO students (student_id, name, email) VALUES (?, ?, ?)",
+            (student_id, name, email)
+        )
+        conn.commit()
+    except Exception as e:
+        print(f"❌ Error adding student: {e}")
+        raise e
+    finally:
+        conn.close()
+
+
+# -------------------------------
+# 🎓 GET STUDENT BY EMAIL
+# -------------------------------
+def get_student_by_email(email):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("SELECT student_id, name, email FROM students WHERE email = ?", (email,))
+        row = cursor.fetchone()
+
+        if row:
+            return {
+                "student_id": row[0],
+                "name": row[1],
+                "email": row[2]
+            }
+        return None
     finally:
         conn.close()
 

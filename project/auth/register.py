@@ -1,25 +1,24 @@
 import streamlit as st
-from database.users_db import add_user
+from database.users_db import add_user, add_student
 from auth.roles import get_role_from_email
 from utils.validation import *
 
 def register():
-    st.subheader("📝 Register")
-
     # 🔹 BASIC INFO
-    name = st.text_input("Full Name", key="reg_name")
-    email = st.text_input("Email", key="reg_email")
-    phone = st.text_input("📱 Phone Number", key="reg_phone")
-    password = st.text_input("Password", type="password", key="reg_pass")
+    with st.container():
+        name = st.text_input("Full Name", placeholder="📛 Full Name", key="reg_name")
+        email = st.text_input("Email", placeholder="✉️ Email Address", key="reg_email")
+        phone = st.text_input("Phone Number", placeholder="📱 Phone Number", key="reg_phone")
+        password = st.text_input("Password", type="password", placeholder="🔑 Create Password", key="reg_pass")
 
     # 🔹 ROLE
     role = get_role_from_email(email) if email else None
 
     # 🔹 STUDENT DETAILS (UI ONLY)
     if role == "student":
-        st.markdown("### 🎓 Student Details")
+        st.markdown("<h4 style='color: white; text-align: center;'>🎓 Student Details</h4>", unsafe_allow_html=True)
 
-        student_id = st.text_input("Student ID")
+        student_id = st.text_input("Student ID", placeholder="🆔 Student ID (Required)")
         department = st.selectbox(
             "Department",
             ["CS", "CTIS", "AIML", "IT"]
@@ -30,7 +29,8 @@ def register():
         )
 
     # 🔹 REGISTER BUTTON
-    if st.button("Register"):
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("Register Account", use_container_width=True):
 
         # ✅ VALIDATION
         if not name or not email or not password or not phone:
@@ -45,6 +45,10 @@ def register():
             st.error("⚠️ Invalid email domain")
             return
 
+        if role == "student" and not student_id:
+            st.error("⚠️ Please enter your Student ID")
+            return
+
         try:
             # ✅ ONLY SEND WHAT DB SUPPORTS
             add_user(
@@ -53,11 +57,17 @@ def register():
                 role=role
             )
 
+            # 🎓 Add student details if student
+            if role == "student":
+                add_student(student_id, name, email)
+
             st.success(f"✅ Registered successfully as {role}")
             st.info("👉 Go to Login tab")
 
         except Exception as e:
-            if "User already exists" in str(e):
+            if "UNIQUE constraint failed: students.student_id" in str(e):
+                st.error("❌ Student ID already registered")
+            elif "User already exists" in str(e) or "UNIQUE constraint failed: users.username" in str(e):
                 st.error("❌ Email already registered")
             else:
                 st.error(f"⚠️ Error: {e}")
