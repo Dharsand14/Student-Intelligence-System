@@ -1,25 +1,40 @@
-def explain_prediction(study_hours, attendance, sleep_hours, mental_health):
+def explain_prediction(data):
     """
     Provides a heuristic explanation of the model's prediction based on input features.
-    In a real-world scenario, you would integrate the SHAP library here.
+    Returns a multi-line string where '+' denotes a positive factor and '-' a concern.
     """
     explanations = []
     
-    if study_hours < 4:
-        explanations.append("- Low study hours negatively impacted the score.")
-    elif study_hours >= 7:
-        explanations.append("+ High study hours significantly boosted the score.")
+    study = float(data.get("study_hours", 0))
+    att = float(data.get("attendance", 0))
+    sleep = float(data.get("sleep_hours", 0))
+    mental = float(data.get("mental_health", 0))
+    
+    # Study Hours Impact
+    if study < 3:
+        explanations.append("- Low study hours negatively impact your score.")
+    elif study >= 6:
+        explanations.append("+ High daily study commitment significantly boosts your grade.")
         
-    if attendance < 75:
-        explanations.append("- Poor attendance severely penalized the prediction.")
+    # Attendance Impact
+    if att < 80:
+        explanations.append("- Poor attendance severely penalizes your prediction.")
+    elif att >= 95:
+        explanations.append("+ Perfect attendance is your strongest performance driver.")
         
-    if sleep_hours < 6:
-        explanations.append("- Lack of adequate sleep negatively affected cognitive metrics.")
+    # Health/Sleep Impact
+    if sleep < 6:
+        explanations.append("- Inadequate sleep creates a cognitive deficit.")
+    elif sleep >= 8:
+        explanations.append("+ Optimal sleep patterns improve your test performance.")
         
-    if mental_health < 50:
-        explanations.append("- Low mental health score lowered the overall performance projection.")
+    if mental < 4:
+        explanations.append("- Low mental health rating is dragging down your focus.")
+    elif mental >= 8:
+        explanations.append("+ High mental health score supports stable exam success.")
         
+    # Aggregate result if empty
     if not explanations:
-        explanations.append("All metrics are balanced, resulting in a stable prediction.")
+        explanations.append("Balanced metrics result in a stable prediction.")
         
     return "\n".join(explanations)

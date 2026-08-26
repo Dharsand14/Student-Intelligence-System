@@ -8,6 +8,7 @@ def secure_filename(filename):
     return filename
 
 import os
+import pandas as pd
 
 def save_uploaded_file(uploaded_file, dest_folder="data/uploads"):
     """
@@ -51,3 +52,49 @@ def cleanup_old_files(directory="data/uploads", days_old=7):
                 deleted_count += 1
                 
     return deleted_count
+
+def validate_prediction_df(df):
+    """
+    Checks if a DataFrame has all required columns for bulk prediction.
+    Returns (True, None) if valid, or (False, error_msg) if not.
+    """
+    required_cols = [
+        "student_id", "study_hours", "attendance", 
+        "sleep_hours", "mental_health", "exam_scores"
+    ]
+    
+    # 🔍 Column Existence
+    missing_cols = [col for col in required_cols if col not in df.columns]
+    if missing_cols:
+        return False, f"Missing required columns: {', '.join(missing_cols)}"
+    
+    # 🧼 DATA CLEANING (NEW FEATURE)
+    try:
+        # Convert types + fill NaNs with 0
+        df["study_hours"] = pd.to_numeric(df["study_hours"], errors='coerce').fillna(0)
+        df["attendance"] = pd.to_numeric(df["attendance"], errors='coerce').fillna(0)
+        df["sleep_hours"] = pd.to_numeric(df["sleep_hours"], errors='coerce').fillna(7)
+        df["mental_health"] = pd.to_numeric(df["mental_health"], errors='coerce').fillna(5)
+        df["exam_scores"] = pd.to_numeric(df["exam_scores"], errors='coerce').fillna(0)
+        df["student_id"] = df["student_id"].astype(str).str.strip().str.upper()
+        
+        # 🚫 Deduplication (Keep most recent if IDs are repeated in same sheet)
+        df.drop_duplicates(subset=["student_id"], keep='last', inplace=True)
+        
+    except Exception as e:
+        return False, f"Structural data error: {e}"
+        
+    return True, None
+
+# 📥 EXPORT HELPERS (NEW FEATURES)
+def convert_df_to_csv(df):
+    """Converts DataFrame to CSV bytes for Streamlit download."""
+    return df.to_csv(index=False).encode('utf-8')
+
+def convert_df_to_excel(df):
+    """Converts DataFrame to Excel bytes for Streamlit download."""
+    import io
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Student_Report')
+    return output.getvalue()

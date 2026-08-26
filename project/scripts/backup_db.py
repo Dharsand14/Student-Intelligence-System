@@ -1,7 +1,7 @@
 import shutil
 import os
 import datetime
-from config.constants import DB_PATH
+from config.settings import DB_PATH
 
 def backup_database():
     """
@@ -11,7 +11,7 @@ def backup_database():
     os.makedirs(backup_dir, exist_ok=True)
     
     if not os.path.exists(DB_PATH):
-        print(f"❌ Source database {DB_PATH} does not exist.")
+        print(f"Error: Source database {DB_PATH} does not exist.")
         return False
         
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -20,10 +20,10 @@ def backup_database():
     
     try:
         shutil.copy2(DB_PATH, backup_path)
-        print(f"✅ Database successfully backed up to: {backup_path}")
+        print(f"Database successfully backed up to: {backup_path}")
         return True
     except Exception as e:
-        print(f"❌ Backup failed: {e}")
+        print(f"Backup failed: {e}")
         return False
 
 if __name__ == "__main__":

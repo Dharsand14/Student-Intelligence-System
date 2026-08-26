@@ -1,13 +1,23 @@
-version: '3.8'
+version: '3.9'
 
 services:
   web:
     build: .
+    image: student-intelligence-v2
+    container_name: student_performance_app
     ports:
       - "8501:8501"
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
+    env_file:
+      - .env
     environment:
       - ENVIRONMENT=production
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    stop_grace_period: 30s

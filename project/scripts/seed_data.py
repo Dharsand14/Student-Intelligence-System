@@ -8,15 +8,15 @@ def generate_mock_data(num_students=10):
     """
     departments = ["CS", "IT", "AIML", "CTIS"]
     
-    print(f"🌱 Seeding {num_students} mock users and their predictions...")
+    print(f"Seeding {num_students} mock users and their predictions...")
     
     for i in range(1, num_students + 1):
         email = f"testuser{i}@university.edu"
         student_id = f"STU{random.randint(1000, 9999)}"
-        name = f"Demo Student {i}"
+        name = f"Student {i}"
         
         try:
-            add_user(username=email, password="password123", role="student")
+            add_user(username=email, password="Password123!", role="student")
             add_student(student_id=student_id, name=name, email=email)
             
             # Create a mock prediction for them
@@ -24,19 +24,20 @@ def generate_mock_data(num_students=10):
                 "student_id": student_id,
                 "study_hours": random.uniform(2, 9),
                 "attendance": random.uniform(60, 100),
-                "sleep_hours": random.uniform(4, 9),
-                "mental_health": random.uniform(30, 90),
-                "exam_scores": random.uniform(50, 95)
+                "mental_health": random.uniform(3, 9),
+                "sleep_hours": random.uniform(5, 9),
+                "exam_scores": random.uniform(40, 95)
             }
-            mock_predicted = min(100, (mock_data["study_hours"] * 3) + (mock_data["attendance"] * 0.5))
+            # Simple heuristic score for mock
+            mock_predicted = min(98, (mock_data["study_hours"] * 4) + (mock_data["attendance"] * 0.4))
             
             add_prediction(mock_data, mock_predicted)
-            print(f"  + Added {email} / {student_id}")
+            print(f"  + Added: {email} / {student_id}")
             
         except Exception as e:
-            print(f"  - Skipped {email}: {e}")
+            print(f"  - Error for {email}: {e}")
             
-    print("✅ Seeding complete!")
+    print("Seed complete successfully.")
 
 if __name__ == "__main__":
     generate_mock_data(10)

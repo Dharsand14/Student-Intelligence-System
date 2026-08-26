@@ -1,7 +1,6 @@
 from database.db_sqlite import get_connection
 from utils.security import hash_password
 
-
 # -------------------------------
 # ➕ ADD USER (SAFE + CLEAN)
 # -------------------------------
@@ -42,7 +41,7 @@ def add_student(student_id, name, email):
         )
         conn.commit()
     except Exception as e:
-        print(f"❌ Error adding student: {e}")
+        print(f"Error adding student: {e}")
         raise e
     finally:
         conn.close()
@@ -123,5 +122,31 @@ def delete_user(username):
         cursor.execute("DELETE FROM users WHERE username = ?", (username,))
         conn.commit()
 
+    finally:
+        conn.close()
+
+
+# -------------------------------
+# 📦 BATCH OPERATIONS (NEW)
+# -------------------------------
+def add_students_batch(students_list):
+    """
+    Automates the mass registration of student profiles.
+    Used during high-capacity CSV/Excel cohort imports.
+    """
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        data = [
+            (s.get("student_id"), s.get("name"), s.get("email"))
+            for s in students_list
+        ]
+        cursor.executemany(
+            "INSERT INTO students (student_id, name, email) VALUES (?, ?, ?)",
+            data
+        )
+        conn.commit()
+    except Exception as e:
+        print(f"Error in student batch insert: {e}")
     finally:
         conn.close()

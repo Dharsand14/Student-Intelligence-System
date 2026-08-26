@@ -1,14 +1,20 @@
+from config.settings import ROLE_STUDENT, ROLE_STAFF
+
 def get_role_from_email(email):
-    email = email.lower()
+    """
+    Automates the role assignment logic based on university email domains.
+    Used during high-capacity student registration and staff onboarding.
+    """
+    if not email:
+        return None
+        
+    email = email.lower().strip()
 
-    if email == "admin@gmail.com":
-        return "admin"
-
-    elif email.endswith("@staff.com"):
-        return "staff"
+    if email.endswith("@staff.com"):
+        return ROLE_STAFF
 
     elif email.endswith("@gmail.com"):
-        return "student"
+        return ROLE_STUDENT
 
     else:
         return "unknown"
