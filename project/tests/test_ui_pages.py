@@ -20,6 +20,10 @@ def test_dashboard_rendering(mock_form, mock_cols, mock_markdown, mock_title, mo
     # Setup session state mock
     st.session_state["role"] = "staff"
     st.session_state["user"] = "admin@university.edu"
+    mock_cols.side_effect = [
+        [MagicMock() for _ in range(4)],
+        [MagicMock() for _ in range(2)],
+    ]
     
     # Execute
     dashboard()
@@ -41,6 +45,7 @@ def test_prediction_page_components(mock_button, mock_slider, mock_form):
     # Setup session state
     st.session_state["role"] = "student"
     st.session_state["student_id"] = "23BCS138"
+    mock_slider.side_effect = [2.0, 75, 6.0, 60.0, 5]
     
     # Execute
     prediction_page()
