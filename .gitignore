@@ -1,0 +1,37 @@
+# Secrets
+.env
+.env.local
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+.coverage
+coverage.xml
+
+# Local or private data
+data/
+
+# Local model artifacts
+models/*.pkl
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
