@@ -1,15 +1,23 @@
 import bcrypt
 import jwt
 import datetime
-from config.settings import JWT_SECRET
-
-SECRET_KEY = JWT_SECRET
+import streamlit as st
+from streamlit.errors import StreamlitSecretNotFoundError
 
 
 def _get_secret_key() -> str:
-    if not SECRET_KEY:
-        raise RuntimeError("Set JWT_SECRET before using password-reset tokens.")
-    return SECRET_KEY
+    try:
+        secret = st.secrets["JWT_SECRET"]
+    except (KeyError, StreamlitSecretNotFoundError) as exc:
+        raise RuntimeError(
+            "Set JWT_SECRET in Streamlit secrets before using password-reset tokens."
+        ) from exc
+    if not isinstance(secret, str) or not secret.strip():
+        raise RuntimeError(
+            "Set JWT_SECRET in Streamlit secrets before using password-reset tokens."
+        )
+    return secret
+
 
 def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()

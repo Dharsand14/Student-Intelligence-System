@@ -8,7 +8,6 @@ import pytest
 
 _TEST_DIRECTORY = tempfile.TemporaryDirectory(prefix="student-intelligence-tests-")
 os.environ["DB_PATH"] = str(Path(_TEST_DIRECTORY.name) / "students.db")
-os.environ.setdefault("JWT_SECRET", "test-only-secret-not-for-deployment")
 
 
 def pytest_sessionstart(session):

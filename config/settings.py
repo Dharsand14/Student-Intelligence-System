@@ -36,7 +36,6 @@ MODEL_VERSION = "0.9.8 (High Confidence)"
 APP_TITLE = "Student Intelligence Performance System"
 
 # --- SECURITY ---
-JWT_SECRET = get_setting("JWT_SECRET")
 ALGORITHM = "HS256"
 PASSWORD_RETRY_LIMIT = 5
 LOCKOUT_DURATION_SEC = 30

@@ -4,11 +4,24 @@ import datetime
 import time
 import os
 import sys
+from types import SimpleNamespace
 
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.security import create_reset_token, verify_reset_token, SECRET_KEY, hash_password, verify_password
+import utils.security as security
+from utils.security import create_reset_token, verify_reset_token, hash_password, verify_password
+
+JWT_TEST_SECRET = "test-only-secret-not-for-deployment"
+
+
+@pytest.fixture(autouse=True)
+def configure_streamlit_secrets(monkeypatch):
+    monkeypatch.setattr(
+        security,
+        "st",
+        SimpleNamespace(secrets={"JWT_SECRET": JWT_TEST_SECRET}),
+    )
 
 def test_jwt_reset_token_full_cycle():
     """
@@ -78,6 +91,14 @@ def test_jwt_token_payload_integrity():
     email = "audit@security.com"
     token = create_reset_token(email)
     
-    decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    decoded = jwt.decode(token, JWT_TEST_SECRET, algorithms=["HS256"])
     assert decoded["email"] == email
     assert "exp" in decoded
+
+
+@pytest.mark.parametrize("secrets", [{}, {"JWT_SECRET": ""}])
+def test_jwt_secret_must_be_configured(monkeypatch, secrets):
+    monkeypatch.setattr(security, "st", SimpleNamespace(secrets=secrets))
+
+    with pytest.raises(RuntimeError, match="Set JWT_SECRET in Streamlit secrets"):
+        create_reset_token("test@student.edu")

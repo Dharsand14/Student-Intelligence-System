@@ -37,13 +37,19 @@ python -m pip install -r requirements.txt
 
 On macOS or Linux, activate with `source .venv/bin/activate`.
 
-The app can start without email settings, but password-reset email requires valid SMTP credentials. Copy `.env.example` to `.env` and set `JWT_SECRET` to a new, private value. For example, generate one with:
+The app can start without email settings, but password-reset email requires valid SMTP credentials. Copy `.env.example` to `.env` to configure optional SMTP delivery. Password-reset tokens require a private JWT secret, generated for example with:
 
 ```powershell
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-Never commit `.env`. The JWT secret is required when creating or validating password-reset tokens; there is no built-in production secret.
+Set the generated value as `JWT_SECRET` in `.streamlit/secrets.toml` (create the file if needed):
+
+```toml
+JWT_SECRET = "paste-the-generated-value-here"
+```
+
+Never commit `.env` or `.streamlit/secrets.toml`. The JWT secret is required when creating or validating password-reset tokens; there is no built-in production secret.
 
 ## Run
 
