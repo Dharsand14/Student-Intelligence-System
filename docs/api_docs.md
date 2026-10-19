@@ -8,7 +8,7 @@ The application uses an internal procedural service layer that encapsulates all 
 ### `predict.py`
 High-performance inference function.
 - `predict(data_dict)`: Executes the primary AI model prediction.
-  - Takes features: `[Study Hours, Attendance, Mental Health, Sleep Hours, Part-time Job]`.
+  - Takes features: `[Study Hours, Attendance, Mental Health, Sleep Hours]`.
   - Returns: A rich response dictionary containing `score`, `was_weekly`, and `ui_metadata` (grade/icon).
   - Logs: Every inference is recorded via `log_event("PREDICTION_MADE", ...)`.
 
@@ -32,7 +32,6 @@ System-wide input protection.
 ### `file_handler.py`
 Data ingestion and export engine.
 - `validate_prediction_df(df)`: Performs automated data cleaning, NaN-filling, and ID deduplication during bulk uploads.
-- Bulk-prediction uploads require `part_time_job` values of `Yes` or `No`.
 - `convert_df_to_csv(df)` / `convert_df_to_excel(df)`: Standardized data formatters for administrative reports.
 
 ### `logger.py`

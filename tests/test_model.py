@@ -2,11 +2,38 @@ import sys
 import os
 import pytest
 import numpy as np
+import joblib
+import pandas as pd
 
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from services.predict import predict
+from scripts.retrain_model import train_model
+
+
+def test_training_supports_excel_exam_scores_and_four_inputs(tmp_path):
+    dataset = pd.DataFrame({
+        "study_hours": np.linspace(1, 6, 24),
+        "attendance": np.linspace(55, 100, 24),
+        "sleep_hours": np.linspace(5, 9, 24),
+        "mental_health": np.linspace(2, 10, 24),
+        "exam_scores": np.linspace(40, 95, 24),
+    })
+    dataset_path = tmp_path / "student_data.xlsx"
+    model_path = tmp_path / "best_model.pkl"
+    dataset.to_excel(dataset_path, index=False)
+
+    metrics = train_model(str(dataset_path), str(model_path))
+    estimator = joblib.load(model_path)
+
+    assert metrics["rows"] == len(dataset)
+    assert list(estimator.feature_names_in_) == [
+        "study_hours",
+        "attendance",
+        "mental_health",
+        "sleep_hours",
+    ]
 
 def test_predict_standard_input():
     # Test case with common daily values
@@ -15,7 +42,6 @@ def test_predict_standard_input():
         "attendance": 85.0,
         "mental_health": 8.0,
         "sleep_hours": 7.0,
-        "part_time_job": "Yes",
     }
     
     result = predict(data)
@@ -34,7 +60,6 @@ def test_predict_weekly_scaling():
         "attendance": 90.0,
         "mental_health": 9.0,
         "sleep_hours": 8.0,
-        "part_time_job": "No",
     }
     
     result = predict(data)
@@ -48,7 +73,6 @@ def test_predict_edge_cases():
         "attendance": 0,
         "mental_health": 1,
         "sleep_hours": 4,
-        "part_time_job": "No",
     }
     result = predict(data)
     assert result["score"] < 100 # Should be lower than a high-performer

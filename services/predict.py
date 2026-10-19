@@ -44,17 +44,12 @@ def predict(data):
         else:
             data["scaled_daily"] = False
 
-        part_time_job = str(data.get("part_time_job", "No")).strip().lower()
-        if part_time_job not in {"yes", "no"}:
-            raise ValueError("part_time_job must be either 'Yes' or 'No'.")
-
         # Keep this order aligned with scripts/retrain_model.py.
         features = pd.DataFrame([{
             "study_hours": study_val,
             "attendance": float(data.get("attendance", 0)),
             "mental_health": float(data.get("mental_health", 0)),
             "sleep_hours": float(data.get("sleep_hours", 0)),
-            "part_time_job": float(part_time_job == "yes"),
         }])
 
         prediction = mdl.predict(features)

@@ -70,7 +70,6 @@ def _render_student_reports(df: pd.DataFrame) -> None:
             "attendance",
             "sleep_hours",
             "mental_health",
-            "part_time_job",
         )
         if column in report_df.columns
     ]
@@ -83,7 +82,6 @@ def _render_student_reports(df: pd.DataFrame) -> None:
             "attendance": "Attendance (%)",
             "sleep_hours": "Sleep hours",
             "mental_health": "Mental health (1–10)",
-            "part_time_job": "Part-time job",
         }
     )
     st.dataframe(history, hide_index=True)
@@ -228,7 +226,7 @@ def reports_page():
                     {sid_txt}
                     Study: <b style="color:#a5b4fc">{row['study_hours']}h</b> | 
                     Attendance: <b style="color:#a5b4fc">{row['attendance']}%</b> | 
-                    Part-time job: <b style="color:#a5b4fc">{row.get('part_time_job') or 'N/A'}</b>
+                    Sleep: <b style="color:#a5b4fc">{row.get('sleep_hours', 'N/A')}h</b>
                 </div>
             </div>
         </div>

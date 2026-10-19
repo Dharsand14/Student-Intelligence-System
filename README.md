@@ -74,7 +74,7 @@ The application creates its SQLite database under `data/` when it starts. Regist
 
 4. Deploy and register an account in the app.
 
-The app reads configuration from Streamlit secrets or environment variables. Do not put actual credentials in this repository. Without SMTP credentials, email features will not send mail. No trained model is included, so prediction features will remain unavailable until a model with inference-compatible features is securely added. Community Cloud's local filesystem is not durable storage; do not use the bundled SQLite approach for persistent student records. Treat a public deployment as a demo and do not enter real student information.
+The app reads configuration from Streamlit secrets or environment variables. Do not put actual credentials in this repository. Without SMTP credentials, email features will not send mail. The compatible four-input model is included under `models/`. Community Cloud's local filesystem is not durable storage; do not use the bundled SQLite approach for persistent student records. Treat a public deployment as a demo and do not enter real student information.
 
 ## Tests
 
@@ -92,14 +92,14 @@ Tests use a temporary SQLite database and a deterministic stand-in estimator so 
 
 ## Dataset and model evaluation
 
-The source training CSV is kept out of the public repository. To train a model locally, use a CSV with the columns `study_hours_per_day`, `attendance_percentage`, `mental_health_rating`, `sleep_hours`, `part_time_job`, and `exam_score`. The script maps these to the app's prediction inputs and uses `exam_score` as the training target.
+The source training dataset is kept out of the public repository. To train from the supplied student-habits workbook, use columns `study_hours`, `attendance`, `sleep_hours`, `mental_health`, and `exam_scores`. The four habit/wellbeing fields are model inputs; `exam_scores` is the target to predict. The script also accepts the equivalent CSV column names `study_hours_per_day`, `attendance_percentage`, `mental_health_rating`, and `exam_score`. Part-time-job status is not used.
 
 ```powershell
-$env:SIS_DATASET_PATH = "C:\path\to\approved_dataset.csv"
+$env:SIS_DATASET_PATH = "C:\path\to\student_habits_performance.xlsx"
 python -m scripts.retrain_model
 ```
 
-The script saves `models/best_model.pkl` and reports holdout R², MAE, and RMSE. These are evaluation metrics, not a guarantee of future performance. The model in this repository was trained from an open-source dataset; the CSV itself is not included.
+The script saves `models/best_model.pkl` and reports holdout R², MAE, and RMSE. These are evaluation metrics, not a guarantee of future performance. The model is trained from an open-source dataset; the workbook itself is not included.
 
 ## Screenshots
 
@@ -124,9 +124,8 @@ utils/                 Validation, security, and logging helpers
 
 ## Limitations and future work
 
-- Prediction requires a model artifact trained on compatible features; training data and the artifact are not shipped.
+- Prediction requires a model artifact trained with the four runtime input columns; the training data is not shipped.
 - The reported evaluation is based on a small dataset and is not evidence of suitability for high-stakes academic decisions.
 - The current notebook's unseeded split limits exact reproducibility.
-- The notebook training features currently differ from the runtime inference features and must be aligned before deploying a model.
 - Review authorization, privacy, fairness, and retention policies before using this application with real student records.
 - Add privacy-safe screenshots and a clearly sourced, redistributable dataset when available.

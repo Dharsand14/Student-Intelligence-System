@@ -29,7 +29,6 @@ Captures every AI-driven inference made for tracking and trend analysis.
 - `sleep_hours` (FLOAT)
 - `mental_health` (FLOAT)
 - `exam_scores` (FLOAT - retained for historical records; new predictions leave this blank)
-- `part_time_job` (TEXT - `Yes` or `No`)
 - `predicted_score` (FLOAT - Result from AI model)
 - `created_at` (DATETIME)
 

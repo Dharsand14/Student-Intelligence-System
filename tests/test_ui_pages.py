@@ -33,13 +33,12 @@ def test_dashboard_rendering(mock_form, mock_cols, mock_markdown, mock_title, mo
     assert any("Dashboard" in str(args) for args in mock_title.call_args_list)
 
 @patch("streamlit.form")
-@patch("streamlit.selectbox")
 @patch("streamlit.slider")
 @patch("streamlit.button")
-def test_prediction_page_components(mock_button, mock_slider, mock_selectbox, mock_form):
+def test_prediction_page_components(mock_button, mock_slider, mock_form):
     """
     Ensures that the prediction page correctly initializes all 
-    5 essential performance inputs (Study, Attend, Sleep, etc.)
+    4 model inputs (study, attendance, sleep, and mental health).
     """
     from pages.prediction import prediction_page
     
@@ -47,13 +46,11 @@ def test_prediction_page_components(mock_button, mock_slider, mock_selectbox, mo
     st.session_state["role"] = "student"
     st.session_state["student_id"] = "23BCS138"
     mock_slider.side_effect = [2.0, 75, 6.0, 5]
-    mock_selectbox.return_value = "No"
     
     # Execute
     prediction_page()
     
     assert mock_slider.call_count == 4
-    mock_selectbox.assert_called_once()
 
 @patch("streamlit.download_button")
 @patch("streamlit.dataframe")
@@ -76,7 +73,6 @@ def test_reports_page_exports(mock_df, mock_download):
             "attendance": 90.0,
             "sleep_hours": 7.0,
             "mental_health": 8.0,
-            "part_time_job": "No",
             "created_at": "2026-03-29",
         }]
         

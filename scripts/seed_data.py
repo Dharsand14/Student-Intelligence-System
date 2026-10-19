@@ -28,7 +28,6 @@ def generate_mock_data(num_students=10):
                 "attendance": random.uniform(60, 100),
                 "mental_health": random.uniform(3, 9),
                 "sleep_hours": random.uniform(5, 9),
-                "part_time_job": random.choice(["Yes", "No"]),
             }
             mock_predicted = min(
                 98,

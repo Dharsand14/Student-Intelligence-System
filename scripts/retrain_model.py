@@ -12,36 +12,51 @@ from sklearn.model_selection import train_test_split
 from config.settings import MODEL_PATH
 
 
-DATASET_COLUMNS = [
-    "study_hours_per_day",
-    "attendance_percentage",
-    "mental_health_rating",
-    "sleep_hours",
-    "part_time_job",
-    "exam_score",
-]
+FEATURE_COLUMNS = {
+    "study_hours": ("study_hours", "study_hours_per_day"),
+    "attendance": ("attendance", "attendance_percentage"),
+    "mental_health": ("mental_health", "mental_health_rating"),
+    "sleep_hours": ("sleep_hours",),
+}
+TARGET_COLUMNS = ("exam_scores", "exam_score")
+TRAINING_COLUMNS = tuple(FEATURE_COLUMNS)
+
+
+def _read_dataset(dataset_path: str) -> pd.DataFrame:
+    path = Path(dataset_path)
+    if path.suffix.lower() in {".xlsx", ".xls"}:
+        return pd.read_excel(path)
+    if path.suffix.lower() == ".csv":
+        return pd.read_csv(path)
+    raise ValueError("Dataset must be a CSV or Excel workbook.")
+
+
+def _select_column(dataset: pd.DataFrame, aliases: tuple[str, ...], label: str) -> str:
+    matches = [column for column in aliases if column in dataset.columns]
+    if not matches:
+        raise ValueError(
+            f"Dataset is missing a column for {label}: {', '.join(aliases)}"
+        )
+    if len(matches) > 1:
+        raise ValueError(
+            f"Dataset has multiple columns for {label}: {', '.join(matches)}"
+        )
+    return matches[0]
 
 
 def train_model(dataset_path: str, model_path: str = MODEL_PATH) -> dict:
-    dataset = pd.read_csv(dataset_path)
-    missing_columns = [column for column in DATASET_COLUMNS if column not in dataset]
-    if missing_columns:
-        raise ValueError(
-            f"Dataset is missing required columns: {', '.join(missing_columns)}"
-        )
-
-    training_data = dataset[DATASET_COLUMNS].copy()
-    for column in DATASET_COLUMNS:
-        if column != "part_time_job":
-            training_data[column] = pd.to_numeric(
-                training_data[column], errors="coerce"
-            )
-
-    job_status = training_data["part_time_job"].astype("string").str.strip().str.title()
-    invalid_statuses = job_status.notna() & ~job_status.isin(["Yes", "No"])
-    if invalid_statuses.any():
-        raise ValueError("part_time_job values must be Yes or No.")
-    training_data["part_time_job"] = job_status.map({"No": 0, "Yes": 1})
+    dataset = _read_dataset(dataset_path)
+    source_columns = {
+        name: _select_column(dataset, aliases, name)
+        for name, aliases in FEATURE_COLUMNS.items()
+    }
+    target_column = _select_column(dataset, TARGET_COLUMNS, "exam score target")
+    training_data = dataset[
+        [*source_columns.values(), target_column]
+    ].rename(columns={source: name for name, source in source_columns.items()})
+    training_data = training_data.rename(columns={target_column: "exam_score"})
+    for column in (*TRAINING_COLUMNS, "exam_score"):
+        training_data[column] = pd.to_numeric(training_data[column], errors="coerce")
 
     valid_rows = training_data.notna().all(axis=1)
     dropped_rows = int((~valid_rows).sum())
@@ -51,21 +66,7 @@ def train_model(dataset_path: str, model_path: str = MODEL_PATH) -> dict:
     if ((training_data["exam_score"] < 0) | (training_data["exam_score"] > 100)).any():
         raise ValueError("exam_score values must be between 0 and 100.")
 
-    features = training_data[
-        [
-            "study_hours_per_day",
-            "attendance_percentage",
-            "mental_health_rating",
-            "sleep_hours",
-            "part_time_job",
-        ]
-    ].rename(
-        columns={
-            "study_hours_per_day": "study_hours",
-            "attendance_percentage": "attendance",
-            "mental_health_rating": "mental_health",
-        }
-    )
+    features = training_data[list(TRAINING_COLUMNS)]
     target = training_data["exam_score"]
 
     x_train, x_test, y_train, y_test = train_test_split(
@@ -96,12 +97,12 @@ def train_model(dataset_path: str, model_path: str = MODEL_PATH) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Train the prediction model from an authorized CSV dataset."
+        description="Train the prediction model from an authorized CSV or Excel dataset."
     )
     parser.add_argument(
         "--dataset",
         default=os.environ.get("SIS_DATASET_PATH"),
-        help="CSV path (or set SIS_DATASET_PATH).",
+        help="CSV or Excel workbook path (or set SIS_DATASET_PATH).",
     )
     parser.add_argument("--output", default=MODEL_PATH, help="Model output path.")
     args = parser.parse_args()

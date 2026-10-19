@@ -24,7 +24,6 @@ def test_send_email_success(mock_smtp):
         "attendance": 85,
         "mental_health": 8,
         "sleep_hours": 7.5,
-        "part_time_job": "Yes",
         "email": "student@example.com"
     }
     prediction = 75.0
@@ -87,7 +86,6 @@ def test_send_email_smtp_error(mock_smtp):
         "attendance": 80,
         "mental_health": 5,
         "sleep_hours": 6,
-        "part_time_job": "No"
     }
     
     # Execute (should not raise due to try-except in send_email)
