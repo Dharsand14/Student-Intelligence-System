@@ -23,7 +23,6 @@ data/
 
 # Local model artifacts
 models/*.pkl
-!models/best_model.pkl
 
 # Logs
 *.log

@@ -23,7 +23,7 @@ Python, Streamlit, SQLite, scikit-learn, pandas, NumPy, Plotly, bcrypt, PyJWT, a
 
 - Python 3.10 or newer.
 - The dependencies in `requirements.txt`.
-- The trained model at `models/best_model.pkl` is included for prediction features. The source dataset is not included.
+- A trained model at `models/best_model.pkl` to run prediction features. The model binary and source dataset are intentionally not included in this repository.
 
 ## Installation
 
@@ -102,7 +102,7 @@ python -m pip install notebook
 jupyter notebook models/training_notebook.ipynb
 ```
 
-Run the notebook cells in order. The final cells write `models/best_model.pkl`. Before replacing the included model with a notebook-generated artifact, align and verify its features with the app: training currently uses `[study_hours, attendance, sleep, mental health, part-time job]`, while inference supplies `[study_hours, attendance, mental health, sleep, previous exam score]`. Do not use a notebook-generated model for predictions until those feature meanings and ordering match.
+Run the notebook cells in order. The final cells write `models/best_model.pkl`. Before using that artifact, align and verify its features with the app: training currently uses `[study_hours, attendance, sleep, mental health, part-time job]`, while inference supplies `[study_hours, attendance, mental health, sleep, previous exam score]`. Do not use a notebook-generated model for predictions until those feature meanings and ordering match.
 
 The reported regression results are:
 
