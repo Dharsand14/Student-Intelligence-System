@@ -125,7 +125,6 @@ utils/                 Validation, security, and logging helpers
 ## Limitations and future work
 
 - Prediction requires a model artifact trained with the four runtime input columns; the training data is not shipped.
-- The reported evaluation is based on a small dataset and is not evidence of suitability for high-stakes academic decisions.
-- The current notebook's unseeded split limits exact reproducibility.
+- The reported evaluation describes a fixed holdout split of this dataset; it does not establish generalization or suitability for high-stakes academic decisions.
 - Review authorization, privacy, fairness, and retention policies before using this application with real student records.
 - Add privacy-safe screenshots and a clearly sourced, redistributable dataset when available.

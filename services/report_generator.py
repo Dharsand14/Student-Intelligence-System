@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 def generate_report(data_list):
     """
@@ -36,19 +35,3 @@ def generate_report(data_list):
     }
 
     return df, summary
-
-def filter_data(df, student_id=None, threshold=None, above=True):
-    """
-    Generic filtering utility for reports.
-    """
-    temp_df = df.copy()
-    if student_id:
-        temp_df = temp_df[temp_df['student_id'] == student_id]
-    
-    if threshold is not None:
-        if above:
-            temp_df = temp_df[temp_df['predicted_score'] >= threshold]
-        else:
-            temp_df = temp_df[temp_df['predicted_score'] < threshold]
-            
-    return temp_df

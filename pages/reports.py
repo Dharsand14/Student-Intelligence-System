@@ -1,6 +1,4 @@
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
 import time
 from database.predictions_db import get_all_predictions, get_by_student

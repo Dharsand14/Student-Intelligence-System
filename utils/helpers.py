@@ -1,27 +1,4 @@
-import json
-import os
 from datetime import datetime
-
-# 🎨 Lottie Animations
-def load_lottie(path):
-    """Safely loads a JSON lottie file."""
-    if not path or not os.path.exists(path):
-        return None
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return None
-
-def show_lottie_anim(st_obj, path, height=200, key=None):
-    """Displays a lottie animation if Streamlit Lottie is available."""
-    try:
-        from streamlit_lottie import st_lottie
-        animation = load_lottie(path)
-        if animation:
-            st_lottie(animation, height=height, key=key)
-    except Exception:
-        pass
 
 # 📊 Data Formatting
 def format_percent(val):

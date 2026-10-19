@@ -12,7 +12,7 @@ The application is built using **Streamlit**, which provides a reactive web inte
 ## 🧠 Intelligence: AI & Machine Learning
 The predictive engine is the core brain of the system.
 - **Models Module**: Stores optimized binary model files (`.pkl`).
-- **Predict Service**: High-performance inference engine that maps 5 student variables to a final predicted exam score.
+- **Predict Service**: Inference engine that uses four student habit and wellbeing inputs to estimate an exam score.
 - **Explainability**: Custom heuristics and driver analysis provide the "Why" behind every prediction.
 
 ## 🗄️ Persistence: SQLite Database

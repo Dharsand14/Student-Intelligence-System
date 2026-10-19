@@ -3,7 +3,6 @@ import streamlit as st
 import pandas as pd
 from database.predictions_db import get_all_predictions
 from services.insight import generate_class_insights
-from utils.helpers import show_lottie_anim, format_percent
 
 def analytics_page():
     st.title("📊 Advanced Analytics")

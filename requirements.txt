@@ -3,13 +3,9 @@ pandas
 numpy
 scikit-learn
 plotly
-streamlit-lottie
 openpyxl
 python-dotenv
 bcrypt
-matplotlib
-seaborn
-psutil
 PyJWT
 joblib
 pytest
