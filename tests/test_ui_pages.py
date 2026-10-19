@@ -68,8 +68,17 @@ def test_reports_page_exports(mock_df, mock_download):
     st.session_state["role"] = "staff"
     
     # Mock data return from DB
-    with patch("database.predictions_db.get_all_predictions") as mock_db:
-        mock_db.return_value = [{"student_id": "S1", "predicted_score": 80.0, "created_at": "2026-03-29"}]
+    with patch("pages.reports.get_all_predictions") as mock_db:
+        mock_db.return_value = [{
+            "student_id": "S1",
+            "predicted_score": 80.0,
+            "study_hours": 4.0,
+            "attendance": 90.0,
+            "sleep_hours": 7.0,
+            "mental_health": 8.0,
+            "part_time_job": "No",
+            "created_at": "2026-03-29",
+        }]
         
         # Execute
         reports_page()
@@ -77,6 +86,39 @@ def test_reports_page_exports(mock_df, mock_download):
     # Assert
     assert mock_download.called
     assert any("CSV" in str(args) for args in mock_download.call_args_list)
+
+
+def test_student_reports_only_load_own_history():
+    from pages import reports
+
+    st.session_state["role"] = "student"
+    st.session_state["student_id"] = "STUDENT-123"
+    with patch("pages.reports.get_by_student") as mock_student_data, patch(
+        "pages.reports.get_all_predictions"
+    ) as mock_all_data, patch("pages.reports._render_student_reports") as mock_render:
+        mock_student_data.return_value = "student-history"
+
+        reports.reports_page()
+
+    mock_student_data.assert_called_once_with("STUDENT-123")
+    mock_render.assert_called_once_with("student-history")
+    mock_all_data.assert_not_called()
+
+
+def test_student_reports_without_linked_id_do_not_load_data():
+    from pages import reports
+
+    st.session_state["role"] = "student"
+    st.session_state.pop("student_id", None)
+    with patch("pages.reports.get_by_student") as mock_student_data, patch(
+        "pages.reports.get_all_predictions"
+    ) as mock_all_data, patch("streamlit.warning") as mock_warning:
+        reports.reports_page()
+
+    mock_student_data.assert_not_called()
+    mock_all_data.assert_not_called()
+    mock_warning.assert_called_once()
+
 
 @patch("streamlit.radio")
 @patch("streamlit.selectbox")

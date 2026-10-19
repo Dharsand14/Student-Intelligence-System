@@ -8,6 +8,106 @@ from services.report_generator import generate_report
 from utils.file_handler import convert_df_to_csv, convert_df_to_excel
 from utils.helpers import format_date_human, get_score_label, get_now
 
+
+def _render_student_reports(df: pd.DataFrame) -> None:
+    st.title("My reports")
+    st.write("Review your prediction history and download your personal report.")
+    st.caption("Predicted scores are estimates, not official exam results.")
+
+    if df.empty:
+        st.info("No predictions yet. Make a prediction to see your report here.")
+        return
+
+    report_df = df.copy()
+    report_df["created_at"] = pd.to_datetime(report_df["created_at"], errors="coerce")
+    report_df = report_df.dropna(subset=["created_at"]).sort_values("created_at")
+    if report_df.empty:
+        st.info("Your report history has no valid timestamps yet.")
+        return
+
+    latest = report_df.iloc[-1]
+    previous_score = (
+        float(report_df.iloc[-2]["predicted_score"])
+        if len(report_df) > 1
+        else None
+    )
+    latest_score = float(latest["predicted_score"])
+
+    st.subheader("Your progress at a glance")
+    metric_columns = st.columns(4)
+    metric_columns[0].metric("Predictions", len(report_df))
+    metric_columns[1].metric(
+        "Latest predicted score",
+        f"{latest_score:.1f}%",
+        delta=(
+            f"{latest_score - previous_score:+.1f} points"
+            if previous_score is not None
+            else None
+        ),
+    )
+    metric_columns[2].metric(
+        "Average predicted score",
+        f"{report_df['predicted_score'].mean():.1f}%",
+    )
+    metric_columns[3].metric(
+        "Highest predicted score",
+        f"{report_df['predicted_score'].max():.1f}%",
+    )
+
+    st.subheader("Predicted score over time")
+    chart_df = report_df[["created_at", "predicted_score"]].rename(
+        columns={"created_at": "Date", "predicted_score": "Predicted score"}
+    ).set_index("Date")
+    st.line_chart(chart_df, y="Predicted score")
+
+    st.subheader("Prediction history")
+    visible_columns = [
+        column
+        for column in (
+            "created_at",
+            "predicted_score",
+            "study_hours",
+            "attendance",
+            "sleep_hours",
+            "mental_health",
+            "part_time_job",
+        )
+        if column in report_df.columns
+    ]
+    history = report_df[visible_columns].sort_values("created_at", ascending=False)
+    history = history.rename(
+        columns={
+            "created_at": "Date",
+            "predicted_score": "Predicted score (%)",
+            "study_hours": "Study hours/day",
+            "attendance": "Attendance (%)",
+            "sleep_hours": "Sleep hours",
+            "mental_health": "Mental health (1–10)",
+            "part_time_job": "Part-time job",
+        }
+    )
+    st.dataframe(history, hide_index=True)
+
+    st.subheader("Download your report")
+    csv_column, excel_column = st.columns(2)
+    with csv_column:
+        st.download_button(
+            "Download CSV",
+            data=convert_df_to_csv(history),
+            file_name="my_prediction_report.csv",
+            mime="text/csv",
+            width="stretch",
+        )
+    with excel_column:
+        st.download_button(
+            "Download Excel",
+            data=convert_df_to_excel(history),
+            file_name="my_prediction_report.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            width="stretch",
+        )
+
+
 def reports_page():
     st.markdown("""
     <style>
@@ -43,20 +143,30 @@ def reports_page():
     </style>
     """, unsafe_allow_html=True)
 
-    st.title("📊 Strategic Reporting & Archives")
-    st.markdown("Access comprehensive prediction history, data exports, and class-wide performance distributions.")
-
     role = str(st.session_state.get("role", "student")).lower().strip()
     student_id = st.session_state.get("student_id", None)
 
-    # ── DATA LOADING ──────────────────────────────────────────
-    if role == "student" and student_id:
-        df = get_by_student(str(student_id))
-        st.info(f"📁 Personalized History Registry (ID: **{student_id}**)")
-    else:
+    if role == "student":
+        if not student_id or str(student_id).strip().lower() == "unknown":
+            st.title("My reports")
+            st.warning(
+                "Your account has no linked student ID. Contact staff to link your student profile."
+            )
+            return
+        _render_student_reports(get_by_student(str(student_id)))
+        return
+
+    if role != "staff":
+        st.error("Access denied.")
+        return
+
+    st.title("📊 Strategic Reporting & Archives")
+    st.markdown("Access comprehensive prediction history, data exports, and class-wide performance distributions.")
+    df = pd.DataFrame()
+    if role == "staff":
         all_data = get_all_predictions()
         df = pd.DataFrame(all_data) if all_data else pd.DataFrame()
-        st.info(f"📁 University Record Repository (Administrator Mode)")
+        st.info("📁 University Record Repository (Administrator Mode)")
 
     if df.empty:
         st.warning("⚠️ No records identified in the central archive. Execute predictions to generate history.")
