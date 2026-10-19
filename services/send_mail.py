@@ -31,7 +31,7 @@ Student Performance Prediction Details
 📊 Attendance : {data['attendance']}%
 🧠 Mental Health : {data['mental_health']}
 😴 Sleep Hours : {data['sleep_hours']}
-📝 Previous Score : {data['exam_scores']}
+💼 Part-time Job : {data.get('part_time_job', 'No')}
 
 🎯 Predicted Performance : {prediction:.2f} %
 """

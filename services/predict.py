@@ -1,6 +1,7 @@
 import joblib
-import numpy as np
 import os
+import pandas as pd
+from config.settings import MODEL_PATH
 
 # Global model cache
 model = None
@@ -13,15 +14,13 @@ def load_model():
     global model
 
     if model is None:
-        model_path = os.path.join("models", "best_model.pkl")
-
-        if not os.path.exists(model_path):
+        if not os.path.exists(MODEL_PATH):
             raise FileNotFoundError(
-                f"❌ Model file not found at: {model_path}"
+                f"❌ Model file not found at: {MODEL_PATH}"
             )
 
         try:
-            model = joblib.load(model_path)
+            model = joblib.load(MODEL_PATH)
             print("Model loaded successfully")
 
         except Exception as e:
@@ -45,15 +44,18 @@ def predict(data):
         else:
             data["scaled_daily"] = False
 
-        # ✅ New Feature Order from Imported Project:
-        # [study_hours, attendance, mental_health, sleep_hours, exam_scores]
-        features = np.array([[
-            study_val,
-            float(data.get("attendance", 0)),
-            float(data.get("mental_health", 0)),
-            float(data.get("sleep_hours", 0)),
-            float(data.get("exam_scores", 0))
-        ]])
+        part_time_job = str(data.get("part_time_job", "No")).strip().lower()
+        if part_time_job not in {"yes", "no"}:
+            raise ValueError("part_time_job must be either 'Yes' or 'No'.")
+
+        # Keep this order aligned with scripts/retrain_model.py.
+        features = pd.DataFrame([{
+            "study_hours": study_val,
+            "attendance": float(data.get("attendance", 0)),
+            "mental_health": float(data.get("mental_health", 0)),
+            "sleep_hours": float(data.get("sleep_hours", 0)),
+            "part_time_job": float(part_time_job == "yes"),
+        }])
 
         prediction = mdl.predict(features)
         result = float(prediction[0])

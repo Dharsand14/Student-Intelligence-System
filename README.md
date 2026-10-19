@@ -23,7 +23,7 @@ Python, Streamlit, SQLite, scikit-learn, pandas, NumPy, Plotly, bcrypt, PyJWT, a
 
 - Python 3.10 or newer.
 - The dependencies in `requirements.txt`.
-- A trained model at `models/best_model.pkl` to run prediction features. The model binary and source dataset are intentionally not included in this repository.
+- The trained model at `models/best_model.pkl` is included for prediction features. The source training dataset is not included.
 
 ## Installation
 
@@ -92,26 +92,14 @@ Tests use a temporary SQLite database and a deterministic stand-in estimator so 
 
 ## Dataset and model evaluation
 
-The project evaluation summary is **104 rows and 9 columns**. The source data is not included because this repository should not distribute private or locally stored student records. The notebook reads a local CSV whose path can be supplied through `SIS_DATASET_PATH`.
-
-To create a local model, obtain an authorized, compatible CSV and keep it outside the repository. Install Jupyter separately if needed, then launch the notebook from this project directory:
+The source training CSV is kept out of the public repository. To train a model locally, use a CSV with the columns `study_hours_per_day`, `attendance_percentage`, `mental_health_rating`, `sleep_hours`, `part_time_job`, and `exam_score`. The script maps these to the app's prediction inputs and uses `exam_score` as the training target.
 
 ```powershell
 $env:SIS_DATASET_PATH = "C:\path\to\approved_dataset.csv"
-python -m pip install notebook
-jupyter notebook models/training_notebook.ipynb
+python -m scripts.retrain_model
 ```
 
-Run the notebook cells in order. The final cells write `models/best_model.pkl`. Before using that artifact, align and verify its features with the app: training currently uses `[study_hours, attendance, sleep, mental health, part-time job]`, while inference supplies `[study_hours, attendance, mental health, sleep, previous exam score]`. Do not use a notebook-generated model for predictions until those feature meanings and ordering match.
-
-The reported regression results are:
-
-| Metric | Result |
-| --- | ---: |
-| R² | 0.78645 |
-| RMSE | 7.3089 score points |
-
-These are regression metrics, not accuracy. R² describes the proportion of target-score variance explained on the evaluation split; RMSE is the typical prediction error in score points, with larger errors penalized more heavily. The training workflow uses an 80/20 train/test split and five-fold cross-validation for model selection. The existing notebook does not fix the split's random seed, so an exact rerun may produce different values. These are reported historical results; the model and data required to reproduce them are not included.
+The script saves `models/best_model.pkl` and reports holdout R², MAE, and RMSE. These are evaluation metrics, not a guarantee of future performance. The model in this repository was trained from an open-source dataset; the CSV itself is not included.
 
 ## Screenshots
 

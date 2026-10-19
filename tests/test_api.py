@@ -17,7 +17,7 @@ def test_integration_prediction_and_recommendation():
         "attendance": 45.0,  # low
         "mental_health": 3.0, # low
         "sleep_hours": 5.0,
-        "exam_scores": 30.0   # low
+        "part_time_job": "No",
     }
     # 1. Prediction
     pred = predict(data)

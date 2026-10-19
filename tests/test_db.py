@@ -31,7 +31,7 @@ def test_add_and_retrieve_prediction():
         "attendance": 95.5,
         "sleep_hours": 7.5,
         "mental_health": 10.0,
-        "exam_scores": 88.0
+        "part_time_job": "Yes",
     }
     score = 92.4
     
@@ -46,6 +46,7 @@ def test_add_and_retrieve_prediction():
     latest = records[0]
     assert latest["student_id"] == "TEST_S01"
     assert latest["predicted_score"] == 92.4
+    assert latest["part_time_job"] == "Yes"
 
 if __name__ == "__main__":
     test_database_init()

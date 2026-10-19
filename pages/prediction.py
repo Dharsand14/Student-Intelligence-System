@@ -98,13 +98,13 @@ def prediction_page():
             st.caption(f"🌙 {sleep_hours}h / night")
 
         with col2:
-            st.markdown("**📝 Exam Scores (%)**")
-            exam_scores = st.slider(
-                "exam_slider", label_visibility="collapsed",
-                min_value=0.0, max_value=100.0, value=60.0, step=1.0,
-                help="Your average past exam score"
+            st.markdown("**💼 Part-time job**")
+            part_time_job = st.selectbox(
+                "part_time_job_select",
+                options=["No", "Yes"],
+                help="Whether you currently have a part-time job",
             )
-            st.caption(f"🎓 Previous avg: {exam_scores}%")
+            st.caption(f"Part-time job: {part_time_job}")
 
             st.markdown("**💆 Mental Health (1–10)**")
             mental_health_raw = st.slider(
@@ -138,7 +138,7 @@ def prediction_page():
                 "attendance": attendance,
                 "sleep_hours": sleep_hours,
                 "mental_health": mental_health,
-                "exam_scores": exam_scores,
+                "part_time_job": part_time_job,
             }
 
             # ✅ Enhanced Prediction (Returns rich dict with UI metadata)
@@ -197,7 +197,7 @@ def prediction_page():
             m2.metric("🏫 Attend", f"{attendance}%")
             m3.metric("😴 Sleep", f"{sleep_hours}h")
             m4.metric("💆 Mental Health", f"{mental_health_raw}/10")
-            m5.metric("📝 Past", f"{exam_scores}%")
+            m5.metric("💼 Part-time job", part_time_job)
 
             # ── Explainability ───────────────────────────────────────
             st.markdown('<div class="section-title">🔍 Why This Score?</div>', unsafe_allow_html=True)

@@ -40,10 +40,16 @@ def init_db():
             sleep_hours REAL,
             mental_health REAL,
             exam_scores REAL,
+            part_time_job TEXT,
             predicted_score REAL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         """)
+        prediction_columns = {
+            row[1] for row in cursor.execute("PRAGMA table_info(predictions)")
+        }
+        if "part_time_job" not in prediction_columns:
+            cursor.execute("ALTER TABLE predictions ADD COLUMN part_time_job TEXT")
 
         # 🧬 AI Insights Table (New Feature: High-Impact Analysis Retention)
         cursor.execute("""

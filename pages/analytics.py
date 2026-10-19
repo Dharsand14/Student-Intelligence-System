@@ -63,7 +63,7 @@ def analytics_page():
         st.markdown("**Core Correlation: Study vs Score**")
         fig1 = px.scatter(
             df, x="study_hours", y="predicted_score", 
-            color="attendance", size="exam_scores",
+            color="attendance", size="predicted_score",
             hover_data=["student_id"],
             color_continuous_scale="Viridis",
             template="plotly_dark",
@@ -97,7 +97,8 @@ def analytics_page():
     # Correlation Heatmap for Staff
     if st.session_state.get("role") == "staff":
         st.markdown("### 🔥 Statistical Heatmap (Staff Only)")
-        numeric_cols = ["study_hours", "attendance", "sleep_hours", "mental_health", "exam_scores", "predicted_score"]
+        df["part_time_job_numeric"] = df["part_time_job"].map({"No": 0, "Yes": 1})
+        numeric_cols = ["study_hours", "attendance", "sleep_hours", "mental_health", "part_time_job_numeric", "predicted_score"]
         corr = df[numeric_cols].corr()
         fig_heat = px.imshow(
             corr, text_auto=".2f", 

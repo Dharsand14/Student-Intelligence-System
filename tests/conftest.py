@@ -22,7 +22,7 @@ def use_deterministic_model(monkeypatch):
 
     class DeterministicModel:
         def predict(self, features):
-            return [float(features[0][-1])]
+            return [50.0]
 
     monkeypatch.setattr(
         prediction_service,

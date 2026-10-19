@@ -25,7 +25,7 @@ def test_dataframe_validation_pass():
         "attendance": [90.0, 80.0],
         "sleep_hours": [7, 8],
         "mental_health": [9, 5],
-        "exam_scores": [70, 60]
+        "part_time_job": ["yes", "no"]
     }
     df = pd.DataFrame(data)
     is_valid, err = validate_prediction_df(df)
@@ -50,7 +50,7 @@ def test_dataframe_cleaning_and_dedup():
         "attendance": [90.0, 95.0, 80.0],
         "sleep_hours": [None, 8, 7], # NaN case
         "mental_health": [9, 5, 4],
-        "exam_scores": [70, 60, 50]
+        "part_time_job": ["yes", "no", "no"]
     }
     df = pd.DataFrame(data)
     is_valid, err = validate_prediction_df(df)

@@ -60,7 +60,7 @@ def validate_prediction_df(df):
     """
     required_cols = [
         "student_id", "study_hours", "attendance", 
-        "sleep_hours", "mental_health", "exam_scores"
+        "sleep_hours", "mental_health", "part_time_job"
     ]
     
     # 🔍 Column Existence
@@ -75,7 +75,9 @@ def validate_prediction_df(df):
         df["attendance"] = pd.to_numeric(df["attendance"], errors='coerce').fillna(0)
         df["sleep_hours"] = pd.to_numeric(df["sleep_hours"], errors='coerce').fillna(7)
         df["mental_health"] = pd.to_numeric(df["mental_health"], errors='coerce').fillna(5)
-        df["exam_scores"] = pd.to_numeric(df["exam_scores"], errors='coerce').fillna(0)
+        df["part_time_job"] = df["part_time_job"].astype(str).str.strip().str.title()
+        if not df["part_time_job"].isin(["Yes", "No"]).all():
+            return False, "part_time_job values must be Yes or No"
         df["student_id"] = df["student_id"].astype(str).str.strip().str.upper()
         
         # 🚫 Deduplication (Keep most recent if IDs are repeated in same sheet)

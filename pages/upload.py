@@ -11,7 +11,7 @@ def upload_page():
     
     st.info("""
     📋 **Required Data Schema:**
-    Ensure your file contains these headers: `student_id`, `study_hours`, `attendance`, `sleep_hours`, `mental_health`, `exam_scores`
+    Ensure your file contains these headers: `student_id`, `study_hours`, `attendance`, `sleep_hours`, `mental_health`, `part_time_job` (`Yes` or `No`)
     """)
 
     uploaded_file = st.file_uploader("Drop your dataset here", type=["csv", "xlsx"])
@@ -56,7 +56,7 @@ def upload_page():
                         "attendance": float(row["attendance"]),
                         "sleep_hours": float(row["sleep_hours"]),
                         "mental_health": float(row["mental_health"]),
-                        "exam_scores": float(row["exam_scores"]),
+                        "part_time_job": str(row["part_time_job"]),
                     }
 
                     # Prediction Integration

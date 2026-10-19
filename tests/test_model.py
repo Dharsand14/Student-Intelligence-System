@@ -15,7 +15,7 @@ def test_predict_standard_input():
         "attendance": 85.0,
         "mental_health": 8.0,
         "sleep_hours": 7.0,
-        "exam_scores": 65.0
+        "part_time_job": "Yes",
     }
     
     result = predict(data)
@@ -34,12 +34,12 @@ def test_predict_weekly_scaling():
         "attendance": 90.0,
         "mental_health": 9.0,
         "sleep_hours": 8.0,
-        "exam_scores": 70.0
+        "part_time_job": "No",
     }
     
     result = predict(data)
     assert result["was_weekly"] is True
-    assert result["score"] > 0
+    assert result["score"] == 50.0
 
 def test_predict_edge_cases():
     # Test with 0 or low values
@@ -48,7 +48,7 @@ def test_predict_edge_cases():
         "attendance": 0,
         "mental_health": 1,
         "sleep_hours": 4,
-        "exam_scores": 20
+        "part_time_job": "No",
     }
     result = predict(data)
     assert result["score"] < 100 # Should be lower than a high-performer

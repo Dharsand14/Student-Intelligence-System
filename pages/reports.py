@@ -118,7 +118,7 @@ def reports_page():
                     {sid_txt}
                     Study: <b style="color:#a5b4fc">{row['study_hours']}h</b> | 
                     Attendance: <b style="color:#a5b4fc">{row['attendance']}%</b> | 
-                    Prior Exam: <b style="color:#a5b4fc">{row['exam_scores']}%</b>
+                    Part-time job: <b style="color:#a5b4fc">{row.get('part_time_job') or 'N/A'}</b>
                 </div>
             </div>
         </div>

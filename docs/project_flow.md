@@ -7,7 +7,7 @@ The Student Performance System ensures a seamless, role-aware user journey throu
 ## 👨‍🎓 Student Journey
 1.  **Authentication**: Secure login and registration with automatic role assignment.
 2.  **Dashboard Hub**: Immediate visualization of their performance history and score trend analysis.
-3.  **Active Prediction**: Use the **Prediction Page** to input current study habits and receive an AI-generated exam score forecast.
+3.  **Active Prediction**: Use the **Prediction Page** to input study habits, attendance, wellbeing, and part-time job status to forecast an exam score.
 4.  **AI Explainability**: Receive detailed feedback (e.g., "Good sleep habits are positively contributing to your score").
 5.  **Personalized Recommendations**: Get actionable advice based on current metrics.
 6.  **Reporting**: Export personal history in CSV or Excel format.

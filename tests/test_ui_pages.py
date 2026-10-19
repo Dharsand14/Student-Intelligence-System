@@ -33,9 +33,10 @@ def test_dashboard_rendering(mock_form, mock_cols, mock_markdown, mock_title, mo
     assert any("Dashboard" in str(args) for args in mock_title.call_args_list)
 
 @patch("streamlit.form")
+@patch("streamlit.selectbox")
 @patch("streamlit.slider")
 @patch("streamlit.button")
-def test_prediction_page_components(mock_button, mock_slider, mock_form):
+def test_prediction_page_components(mock_button, mock_slider, mock_selectbox, mock_form):
     """
     Ensures that the prediction page correctly initializes all 
     5 essential performance inputs (Study, Attend, Sleep, etc.)
@@ -45,13 +46,14 @@ def test_prediction_page_components(mock_button, mock_slider, mock_form):
     # Setup session state
     st.session_state["role"] = "student"
     st.session_state["student_id"] = "23BCS138"
-    mock_slider.side_effect = [2.0, 75, 6.0, 60.0, 5]
+    mock_slider.side_effect = [2.0, 75, 6.0, 5]
+    mock_selectbox.return_value = "No"
     
     # Execute
     prediction_page()
     
-    # Assert that all 5 sliders for factors were requested
-    assert mock_slider.call_count >= 5
+    assert mock_slider.call_count == 4
+    mock_selectbox.assert_called_once()
 
 @patch("streamlit.download_button")
 @patch("streamlit.dataframe")
